@@ -3,8 +3,7 @@ import {
   getProductById,
   getProducts,
 } from "../controllers/productController.js";
-import Product from "../models/productModel.js";
-import asyncHandler from "../middleware/asyncHandler.js";
+
 const router = express.Router();
 
 // previously router.get("/", getProducts);
