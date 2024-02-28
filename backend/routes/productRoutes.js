@@ -2,14 +2,14 @@ import express from "express";
 import {
   getProductById,
   getProducts,
+  createProduct,
 } from "../controllers/productController.js";
+import { protect, admin } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-// previously router.get("/", getProducts);
-router.route("/").get(getProducts);
+router.route("/").get(getProducts).post(protect, admin, createProduct);
 
-// previously router.get("/:id", getProductById);
 router.route("/:id").get(getProductById);
 
 export default router;
