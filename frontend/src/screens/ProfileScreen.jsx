@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Col, Form, Row, Table } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
@@ -13,8 +13,8 @@ import { FaTimes } from "react-icons/fa";
 const ProfileScreen = () => {
   const { userInfo } = useSelector((state) => state.auth);
 
-  const [name, setName] = useState(userInfo?.name || "");
-  const [email, setEmail] = useState(userInfo?.email || "");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
@@ -45,6 +45,11 @@ const ProfileScreen = () => {
       }
     }
   };
+
+  useEffect(() => {
+    setName(userInfo.name);
+    setName(userInfo.email);
+  }, [userInfo.name, userInfo.email]);
 
   return (
     <Row>
