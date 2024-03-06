@@ -17,8 +17,29 @@ const HomeScreen = () => {
   return (
     <>
       {!keyword ? (
-        <ProductCarousel />
+        <>
+          {" "}
+          <Row className=" my-3">
+            <Col md={6} sm={12} className="d-flex align-items-center">
+              <div>
+                <h1 className="hero-text text-uppercase display-2">
+                  Electronic devices store{" "}
+                  <span className="hero-span">made for you.</span>
+                </h1>
+              </div>
+            </Col>
+            <Col md={6} sm={12} className="d-flex align-items-center">
+              <img
+                src="/images/your-electronics.png"
+                alt="your electronics store"
+                className="hero-img"
+              />
+            </Col>
+          </Row>
+          <h2>Latest Products</h2>
+        </>
       ) : (
+        // <ProductCarousel />
         <Link to="/" className="btn btn-light mb-4">
           Go back
         </Link>
@@ -32,7 +53,6 @@ const HomeScreen = () => {
         </Message>
       ) : (
         <>
-          <h1>Latest Products</h1>
           <Row>
             {data.products.map((product) => (
               <Col key={product._id} sm={12} md={6} lg={4} xl={3}>

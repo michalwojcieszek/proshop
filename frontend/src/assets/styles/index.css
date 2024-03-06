@@ -51,3 +51,32 @@ table th {
   bottom: 0;
   background: rgba(0, 0, 0, 0.5);
 }
+.hero-container {
+  width: 100%;
+  background-color: violet;
+  /* position: absolute; */
+
+  /* In relation to ITSELF */
+  transform: translate(-50%, -50%);
+  left: 50%;
+  top: 50%;
+}
+
+.hero-container-inner {
+  width: 50%;
+  background-color: blue;
+}
+
+.hero-img {
+  width: 100%;
+}
+
+.hero-text {
+  text-transform: uppercase;
+  font-weight: 500;
+  letter-spacing: 1px;
+}
+
+.hero-span {
+  color: #1c7ed6;
+}
