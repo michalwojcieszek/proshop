@@ -48,7 +48,7 @@ const ProfileScreen = () => {
 
   useEffect(() => {
     setName(userInfo.name);
-    setName(userInfo.email);
+    setEmail(userInfo.email);
   }, [userInfo.name, userInfo.email]);
 
   return (

@@ -9,6 +9,8 @@ import {
   deleteUser,
   getUserById,
   updateUser,
+  addToFavourites,
+  removeFromFavourites,
 } from "../controllers/userController.js";
 import { protect, admin } from "../middleware/authMiddleware.js";
 
@@ -31,5 +33,9 @@ router
   .get(protect, admin, getUserById)
   .delete(protect, admin, deleteUser)
   .put(protect, admin, updateUser);
+
+router.put("/profile/favourites", protect, addToFavourites);
+
+router.delete("/profile/favourites/:productId", protect, removeFromFavourites);
 
 export default router;

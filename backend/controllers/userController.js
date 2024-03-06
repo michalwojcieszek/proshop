@@ -6,16 +6,21 @@ import User from "../models/userModel.js";
 // @route POST /api/users/auth
 // @access Public
 const authUser = asyncHandler(async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, favourites } = req.body;
+  //combining Redux client and backend favourite Items
   //checks if there is an user that matches email
   const user = await User.findOne({ email });
   if (user && (await user.matchPassword(password))) {
     generateToken(res, user._id);
+    const combinedFavourites = [
+      ...new Set([...user.favouriteItems, ...favourites]),
+    ];
     res.status(200).json({
       _id: user._id,
       name: user.name,
       email: user.email,
       isAdmin: user.isAdmin,
+      favouriteItems: combinedFavourites,
     });
   } else {
     res.status(401);
@@ -176,6 +181,53 @@ const updateUser = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc Add favourite
+// @route PUT /api/users/profile/favourites
+// @access Private
+const addToFavourites = asyncHandler(async (req, res) => {
+  const { productId } = req.body;
+  const user = await User.findById(req.user._id);
+
+  if (user) {
+    user.favouriteItems = [...user.favouriteItems, productId];
+    const updatedUser = await user.save();
+    res.status(200).json({
+      _id: updatedUser._id,
+      name: updatedUser.name,
+      email: updatedUser.email,
+      isAdmin: updatedUser.isAdmin,
+      favouriteItems: updatedUser.favouriteItems,
+    });
+  } else {
+    res.json(404);
+    throw new Error("User not found");
+  }
+});
+
+// @desc Remove favourite
+// @route DELETE /api/users/profile/favourites/:productId
+// @access Private
+const removeFromFavourites = asyncHandler(async (req, res) => {
+  const productId = req.params.productId;
+  const user = await User.findById(req.user._id);
+  if (user) {
+    user.favouriteItems = user.favouriteItems.filter(
+      (id) => id.toString() !== productId
+    );
+    const updatedUser = await user.save();
+    res.status(200).json({
+      _id: updatedUser._id,
+      name: updatedUser.name,
+      email: updatedUser.email,
+      isAdmin: updatedUser.isAdmin,
+      favouriteItems: updatedUser.favouriteItems,
+    });
+  } else {
+    res.json(404);
+    throw new Error("User not found");
+  }
+});
+
 export {
   authUser,
   registerUser,
@@ -186,4 +238,6 @@ export {
   deleteUser,
   getUserById,
   updateUser,
+  addToFavourites,
+  removeFromFavourites,
 };

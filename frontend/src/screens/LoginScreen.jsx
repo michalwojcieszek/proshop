@@ -18,6 +18,7 @@ const LoginScreen = () => {
   const [login, { isLoading }] = useLoginMutation();
 
   const { userInfo } = useSelector((state) => state.auth);
+  const favourites = useSelector((state) => state.favourites);
 
   const { search } = useLocation(); // ?redirect=/shipping or nothing
   const sp = new URLSearchParams(search); // URLSearchParams {size: 1}
@@ -34,7 +35,8 @@ const LoginScreen = () => {
   const submitHandler = async (e) => {
     e.preventDefault();
     try {
-      const res = await login({ email, password }).unwrap();
+      const res = await login({ email, password, favourites }).unwrap();
+      console.log(res);
       dispatch(setCredentials({ ...res }));
     } catch (err) {
       toast.error(err?.data?.message || err.error);
