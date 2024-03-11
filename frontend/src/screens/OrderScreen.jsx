@@ -75,7 +75,7 @@ const OrderScreen = () => {
     return actions.order.capture().then(async function (details) {
       try {
         //changes message to 'not paid' to 'paid'
-        await payOrder({ orderId, details }).unwrap();
+        await payOrder({ orderId, details });
         refetch();
         toast.success("Payment successful");
       } catch (err) {

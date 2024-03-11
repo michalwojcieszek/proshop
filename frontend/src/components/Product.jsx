@@ -16,6 +16,10 @@ import {
   addToFavourites,
   removeFromFavourites,
 } from "../slices/favouritesSlice";
+import {
+  useCreateFavouriteMutation,
+  useDeleteFavouriteMutation,
+} from "../slices/favouriteApiSlice";
 
 const Product = ({ product }) => {
   const navigate = useNavigate();
@@ -26,49 +30,71 @@ const Product = ({ product }) => {
 
   const [isProductFavourite, setIsProductFavourite] = useState(false);
 
-  useEffect(() => {
-    if (
-      userInfo?.favouriteItems?.find(
-        (productId) => productId === product._id
-      ) ||
-      favourites.find((productId) => productId === product._id)
-    ) {
+  const [createFavourite, { isLoading: loadingCreateFavourite }] =
+    useCreateFavouriteMutation();
+  const [deleteFavourite, { isLoading: loadingDeleteFavourite }] =
+    useDeleteFavouriteMutation();
+
+  const addToFavouritesHandler = async (product) => {
+    if (userInfo) {
+      const res = await createFavourite(product);
+      console.log(res);
       setIsProductFavourite(true);
     }
-  }, [favourites, userInfo, userInfo?.favouriteItems, product._id]);
-
-  const [updateFavourite, { isLoading: loadingUpdateFavourite }] =
-    useUpdateFavouritesMutation();
-  const [removeFavourite, { isLoading: loadingRemoveFavourite }] =
-    useRemoveFavouriteMutation();
-
-  const addToCartHandler = (product) => {
-    dispatch(addToCart({ ...product, qty: 1 }));
-    navigate("/cart");
-  };
-
-  const addToFavouritesHandler = async (productId) => {
-    if (userInfo) {
-      const res = await updateFavourite({ productId });
-      dispatch(setCredentials({ ...res.data }));
-    }
-    if (!userInfo) {
-      dispatch(addToFavourites(productId));
-    }
-    toast.success(`${product.name} added to your favourites`);
-    setIsProductFavourite(true);
   };
 
   const removeFromFavouritesHandler = async (productId) => {
     if (userInfo) {
-      const res = await removeFavourite(productId);
-      dispatch(setCredentials({ ...res.data }));
+      const res = await deleteFavourite(productId);
+      console.log(res);
+      setIsProductFavourite(false);
     }
-    if (!userInfo) {
-      dispatch(removeFromFavourites(productId));
-    }
-    toast.success(`${product.name} removed from your favourites`);
-    setIsProductFavourite(false);
+  };
+
+  // useEffect(() => {
+  //   if (
+  //     userInfo?.favouriteItems?.find(
+  //       (productId) => productId === product._id
+  //     ) ||
+  //     favourites.find((productId) => productId === product._id)
+  //   ) {
+  //     setIsProductFavourite(true);
+  //   }
+  // }, [favourites, userInfo, userInfo?.favouriteItems, product._id]);
+
+  // const [updateFavourite, { isLoading: loadingUpdateFavourite }] =
+  //   useUpdateFavouritesMutation();
+  // const [removeFavourite, { isLoading: loadingRemoveFavourite }] =
+  //   useRemoveFavouriteMutation();
+
+  // const addToFavouritesHandler = async (productId) => {
+  //   if (userInfo) {
+  //     const res = await updateFavourite({ productId });
+
+  //     //   dispatch(setCredentials({ ...res.data }));
+  //     // }
+  //     // if (!userInfo) {
+  //     //   dispatch(addToFavourites(productId));
+  //     // }
+  //     // toast.success(`${product.name} added to your favourites`);
+  //     // setIsProductFavourite(true);
+  //   }
+
+  //   const removeFromFavouritesHandler = async (productId) => {
+  //     if (userInfo) {
+  //       const res = await removeFavourite(productId);
+  //       dispatch(setCredentials({ ...res.data }));
+  //     }
+  //     if (!userInfo) {
+  //       dispatch(removeFromFavourites(productId));
+  //     }
+  //     toast.success(`${product.name} removed from your favourites`);
+  //     setIsProductFavourite(false);
+  //   };
+
+  const addToCartHandler = (product) => {
+    dispatch(addToCart({ ...product, qty: 1 }));
+    navigate("/cart");
   };
 
   return (
@@ -111,7 +137,7 @@ const Product = ({ product }) => {
         <FaRegHeart
           className="position-absolute top-0 end-0 mt-2 me-2 text-black cursor-pointer"
           style={{ cursor: "pointer" }}
-          onClick={() => addToFavouritesHandler(product._id)}
+          onClick={() => addToFavouritesHandler(product)}
         />
       )}
     </Card>
