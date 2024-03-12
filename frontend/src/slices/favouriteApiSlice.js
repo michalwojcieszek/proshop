@@ -17,8 +17,18 @@ export const favouriteApiSlice = apiSlice.injectEndpoints({
         body: { productId },
       }),
     }),
+    addFavouriteFromLocal: builder.mutation({
+      query: (localFavourites) => ({
+        url: `${FAVOURITE_URL}/mine`,
+        method: "POST",
+        body: { localFavourites },
+      }),
+    }),
   }),
 });
 
-export const { useCreateFavouriteMutation, useDeleteFavouriteMutation } =
-  favouriteApiSlice;
+export const {
+  useCreateFavouriteMutation,
+  useDeleteFavouriteMutation,
+  useAddFavouriteFromLocalMutation,
+} = favouriteApiSlice;

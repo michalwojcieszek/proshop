@@ -9,6 +9,7 @@ import { logout } from "../slices/authSlice";
 import logo from "../assets/logo.png";
 import SearchBox from "./SearchBox";
 import { resetCart } from "../slices/cartSlice";
+import { clearFavourites } from "../slices/favouritesSlice";
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -16,6 +17,7 @@ const Header = () => {
 
   const { cartItems } = useSelector((state) => state.cart);
   const { userInfo } = useSelector((state) => state.auth);
+  const favourites = useSelector((state) => state.favourites);
 
   const [logoutApiCall] = useLogoutMutation();
 
@@ -26,6 +28,7 @@ const Header = () => {
       //clearing the state and local storage
       dispatch(logout());
       dispatch(resetCart());
+      dispatch(clearFavourites());
       navigate("/login");
     } catch (err) {
       console.log(err);
@@ -59,6 +62,11 @@ const Header = () => {
             <LinkContainer to="/favourites">
               <Nav.Link>
                 <FaHeart /> Favourite
+                {favourites.length > 0 && (
+                  <Badge pill bg="success" style={{ marginLeft: "5px" }}>
+                    {favourites.length}
+                  </Badge>
+                )}
                 {/* {cartItems.length > 0 && (
                   <Badge pill bg="success" style={{ marginLeft: "5px" }}>
                     {cartItems.reduce((a, c) => a + c.qty, 0)}

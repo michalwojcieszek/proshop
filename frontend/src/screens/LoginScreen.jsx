@@ -7,6 +7,8 @@ import { useLoginMutation } from "../slices/usersApiSlice";
 import { setCredentials } from "../slices/authSlice";
 import { toast } from "react-toastify";
 import Loader from "../components/Loader";
+import { useAddFavouriteFromLocalMutation } from "../slices/favouriteApiSlice";
+import { updateFavourites } from "../slices/favouritesSlice";
 
 const LoginScreen = () => {
   const [email, setEmail] = useState("");
@@ -18,7 +20,10 @@ const LoginScreen = () => {
   const [login, { isLoading }] = useLoginMutation();
 
   const { userInfo } = useSelector((state) => state.auth);
-  const favourites = useSelector((state) => state.favourites);
+  const localFavourites = useSelector((state) => state.favourites);
+
+  const [addFavouriteFromLocal, { isLoading: loadingAddFavouriteFromLocal }] =
+    useAddFavouriteFromLocalMutation();
 
   const { search } = useLocation(); // ?redirect=/shipping or nothing
   const sp = new URLSearchParams(search); // URLSearchParams {size: 1}
@@ -35,9 +40,13 @@ const LoginScreen = () => {
   const submitHandler = async (e) => {
     e.preventDefault();
     try {
-      const res = await login({ email, password, favourites }).unwrap();
-      console.log(res);
+      const res = await login({ email, password }).unwrap();
       dispatch(setCredentials({ ...res }));
+      console.log(localFavourites);
+      const resAddFavouriteFromLocal = await addFavouriteFromLocal(
+        localFavourites
+      );
+      dispatch(updateFavourites(resAddFavouriteFromLocal.data.favouriteItems));
     } catch (err) {
       toast.error(err?.data?.message || err.error);
     }

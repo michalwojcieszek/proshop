@@ -1,17 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Button, Card } from "react-bootstrap";
+import { Button, Card, Spinner } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import Rating from "./Rating";
 import { FaCartPlus, FaHeart, FaRegHeart } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "../slices/cartSlice";
-import {
-  useRemoveFavouriteMutation,
-  useUpdateFavouritesMutation,
-} from "../slices/usersApiSlice";
-import { toast } from "react-toastify";
-import { setCredentials } from "../slices/authSlice";
 import {
   addToFavourites,
   removeFromFavourites,
@@ -35,62 +29,34 @@ const Product = ({ product }) => {
   const [deleteFavourite, { isLoading: loadingDeleteFavourite }] =
     useDeleteFavouriteMutation();
 
+  useEffect(() => {
+    if (favourites.find((x) => x._id === product._id)) {
+      setIsProductFavourite(true);
+    } else {
+      setIsProductFavourite(false);
+    }
+  }, [favourites, setIsProductFavourite, product._id]);
+
   const addToFavouritesHandler = async (product) => {
     if (userInfo) {
-      const res = await createFavourite(product);
-      console.log(res);
-      setIsProductFavourite(true);
+      await createFavourite(product);
     }
+    dispatch(
+      addToFavourites({
+        _id: product._id,
+        name: product.name,
+        image: product.image,
+        price: product.price,
+      })
+    );
   };
 
   const removeFromFavouritesHandler = async (productId) => {
     if (userInfo) {
-      const res = await deleteFavourite(productId);
-      console.log(res);
-      setIsProductFavourite(false);
+      await deleteFavourite(productId);
     }
+    dispatch(removeFromFavourites(productId));
   };
-
-  // useEffect(() => {
-  //   if (
-  //     userInfo?.favouriteItems?.find(
-  //       (productId) => productId === product._id
-  //     ) ||
-  //     favourites.find((productId) => productId === product._id)
-  //   ) {
-  //     setIsProductFavourite(true);
-  //   }
-  // }, [favourites, userInfo, userInfo?.favouriteItems, product._id]);
-
-  // const [updateFavourite, { isLoading: loadingUpdateFavourite }] =
-  //   useUpdateFavouritesMutation();
-  // const [removeFavourite, { isLoading: loadingRemoveFavourite }] =
-  //   useRemoveFavouriteMutation();
-
-  // const addToFavouritesHandler = async (productId) => {
-  //   if (userInfo) {
-  //     const res = await updateFavourite({ productId });
-
-  //     //   dispatch(setCredentials({ ...res.data }));
-  //     // }
-  //     // if (!userInfo) {
-  //     //   dispatch(addToFavourites(productId));
-  //     // }
-  //     // toast.success(`${product.name} added to your favourites`);
-  //     // setIsProductFavourite(true);
-  //   }
-
-  //   const removeFromFavouritesHandler = async (productId) => {
-  //     if (userInfo) {
-  //       const res = await removeFavourite(productId);
-  //       dispatch(setCredentials({ ...res.data }));
-  //     }
-  //     if (!userInfo) {
-  //       dispatch(removeFromFavourites(productId));
-  //     }
-  //     toast.success(`${product.name} removed from your favourites`);
-  //     setIsProductFavourite(false);
-  //   };
 
   const addToCartHandler = (product) => {
     dispatch(addToCart({ ...product, qty: 1 }));
@@ -127,7 +93,9 @@ const Product = ({ product }) => {
           <span className="ms-2">Add to cart</span>
         </Button>
       </Card.Body>
-      {isProductFavourite ? (
+      {loadingCreateFavourite || loadingDeleteFavourite ? (
+        <Spinner className="position-absolute top-0 end-0 mt-2 me-2" />
+      ) : isProductFavourite ? (
         <FaHeart
           className="position-absolute top-0 end-0 mt-2 me-2 text-danger cursor-pointer"
           style={{ cursor: "pointer" }}

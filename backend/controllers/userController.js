@@ -12,15 +12,15 @@ const authUser = asyncHandler(async (req, res) => {
   const user = await User.findOne({ email });
   if (user && (await user.matchPassword(password))) {
     generateToken(res, user._id);
-    const combinedFavourites = [
-      ...new Set([...user.favouriteItems, ...favourites]),
-    ];
+    // const combinedFavourites = [
+    //   ...new Set([...user.favouriteItems, ...favourites]),
+    // ];
     res.status(200).json({
       _id: user._id,
       name: user.name,
       email: user.email,
       isAdmin: user.isAdmin,
-      favouriteItems: combinedFavourites,
+      // favouriteItems: combinedFavourites,
     });
   } else {
     res.status(401);
