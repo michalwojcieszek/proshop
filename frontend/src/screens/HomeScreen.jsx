@@ -1,4 +1,4 @@
-import { Row, Col, Button } from "react-bootstrap";
+import { Row, Col, Button, Carousel } from "react-bootstrap";
 import Product from "../components/Product";
 import { useGetProductsQuery } from "../slices/productsApiSlice";
 import Message from "../components/Message";
@@ -39,7 +39,6 @@ const HomeScreen = () => {
           <h2>Latest Products</h2>
         </>
       ) : (
-        // <ProductCarousel />
         <Link to="/" className="btn btn-light mb-4">
           Go back
         </Link>
@@ -59,6 +58,7 @@ const HomeScreen = () => {
                 <Product product={product} />
               </Col>
             ))}
+            {!keyword && <ProductCarousel />}
           </Row>
           <Paginate
             pages={data.pages}
