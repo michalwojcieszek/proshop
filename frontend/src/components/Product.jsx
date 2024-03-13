@@ -14,6 +14,7 @@ import {
   useCreateFavouriteMutation,
   useDeleteFavouriteMutation,
 } from "../slices/favouriteApiSlice";
+import { toast } from "react-toastify";
 
 const Product = ({ product }) => {
   const navigate = useNavigate();
@@ -49,6 +50,7 @@ const Product = ({ product }) => {
         price: product.price,
       })
     );
+    toast.success(`${product.name} added to your favourites ❤️`);
   };
 
   const removeFromFavouritesHandler = async (productId) => {
@@ -56,6 +58,7 @@ const Product = ({ product }) => {
       await deleteFavourite(productId);
     }
     dispatch(removeFromFavourites(productId));
+    toast.success(`${product.name} removed from your favourites 💔`);
   };
 
   const addToCartHandler = (product) => {
@@ -97,13 +100,13 @@ const Product = ({ product }) => {
         <Spinner className="position-absolute top-0 end-0 mt-2 me-2" />
       ) : isProductFavourite ? (
         <FaHeart
-          className="position-absolute top-0 end-0 mt-2 me-2 text-danger cursor-pointer"
+          className="position-absolute top-0 end-0 mt-2 me-2 text-danger cursor-pointer heart-icon"
           style={{ cursor: "pointer" }}
           onClick={() => removeFromFavouritesHandler(product._id)}
         />
       ) : (
         <FaRegHeart
-          className="position-absolute top-0 end-0 mt-2 me-2 text-black cursor-pointer"
+          className="position-absolute top-0 end-0 mt-2 me-2 text-black cursor-pointer heart-icon"
           style={{ cursor: "pointer" }}
           onClick={() => addToFavouritesHandler(product)}
         />

@@ -10,7 +10,7 @@ const App = () => {
   return (
     <>
       <Header />
-      <main className="py-3">
+      <main className="my-2 my-md-4">
         <Container>
           <Outlet />
         </Container>

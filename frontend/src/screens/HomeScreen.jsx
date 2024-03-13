@@ -19,7 +19,7 @@ const HomeScreen = () => {
       {!keyword ? (
         <>
           {" "}
-          <Row className=" my-3">
+          <Row>
             <Col md={6} sm={12} className="d-flex align-items-center">
               <div>
                 <h1 className="hero-text text-uppercase display-2">
