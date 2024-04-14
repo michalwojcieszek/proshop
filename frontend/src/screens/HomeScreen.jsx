@@ -30,7 +30,7 @@ const HomeScreen = () => {
             </Col>
             <Col md={6} sm={12} className="d-flex align-items-center">
               <img
-                src="/images/your-electronics.png"
+                src="/images/your-electronics.webp"
                 alt="your electronics store"
                 className="hero-img"
               />
